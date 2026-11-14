@@ -1,9 +1,9 @@
 """Day 1: run each AI test file on the buggy code it was written for, then on the correct code.
 
 Usage: python experiment/measure.py <oracle|blind>
-A test that fails on the buggy code caught the bug. A test that fails on the correct code
-asserts something the spec does not say: for tests written from the code, that is the bug
-written down as correct.
+A test that fails on the buggy code alone caught the bug. A test that fails on the correct code
+alone is wrong: written from the code, it asserts the bug; written from the spec, it shows a gap
+in the spec. A test that fails on both checks something neither version does.
 """
 
 import re
@@ -16,18 +16,18 @@ from pathlib import Path
 HERE = Path(__file__).parent
 
 
-def failed(root: Path, tests: str) -> tuple[int, int]:
-    """How many tests failed, and how many ran."""
-    cmd = [sys.executable, "-B", "-m", "pytest", "-q", "-p", "no:cacheprovider", tests]
+def failed(root: Path, tests: str) -> tuple[set[str], int]:
+    """The names of the tests that failed, and how many ran."""
+    cmd = [sys.executable, "-B", "-m", "pytest", "-q", "-rf", "-p", "no:cacheprovider", tests]
     out = subprocess.run(cmd, cwd=root, capture_output=True, text=True).stdout
-    found = {word: int(n) for n, word in re.findall(r"(\d+) (passed|failed)", out)}
-    return found.get("failed", 0), found.get("passed", 0) + found.get("failed", 0)
+    ran = sum(int(n) for n in re.findall(r"(\d+) (?:passed|failed)", out))
+    return set(re.findall(r"^FAILED (\S+)", out, re.M)), ran
 
 
 def main() -> None:
     run = sys.argv[1]
-    print("| Function | Fails on buggy code (bug caught) | Fails on correct code (wrong test) |")
-    print("|---|---|---|")
+    print("| Function | Tests | Catch the bug | Wrong on correct code | Fail on both |")
+    print("|---|---|---|---|---|")
     for module in sorted((HERE / run / "functions").glob("[!_]*.py")):
         tests = f"experiment/{run}/tests/test_{module.stem}.py"
         with tempfile.TemporaryDirectory() as tmp:
@@ -37,7 +37,8 @@ def main() -> None:
             correct = HERE / "strength" / "functions" / module.name
             shutil.copy(correct, root / "experiment" / run / "functions" / module.name)
             on_correct, _ = failed(root, tests)
-        print(f"| {module.stem} | {on_bug} of {ran} | {on_correct} of {ran} |")
+        bug, right, both = on_bug - on_correct, on_correct - on_bug, on_bug & on_correct
+        print(f"| {module.stem} | {ran} | {len(bug)} | {len(right)} | {len(both)} |")
 
 
 if __name__ == "__main__":
