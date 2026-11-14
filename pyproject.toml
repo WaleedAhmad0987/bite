@@ -1,0 +1,32 @@
+[project]
+name = "bite"
+version = "0.1.0"
+description = "A merge gate that proves AI-written tests catch bugs, not just run lines"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+
+[project.optional-dependencies]
+fix = ["anthropic>=0.40"]
+
+[dependency-groups]
+dev = ["mypy>=1.13", "pytest>=8.3", "ruff>=0.8"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "S", "RUF"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101"]
+"experiment/**" = ["S101"]
+
+[tool.mypy]
+strict = true
+python_version = "3.12"
