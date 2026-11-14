@@ -1,7 +1,7 @@
 [project]
 name = "bite"
 version = "0.1.0"
-description = "A merge gate that proves AI-written tests catch bugs, not just run lines"
+description = "A merge gate for AI-written code: tests from the spec alone, that must catch bugs"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = []
@@ -22,15 +22,15 @@ testpaths = ["tests"]
 [tool.ruff]
 line-length = 100
 target-version = "py312"
-# The Day 1 tests are kept exactly as the AI wrote them, since they are the evidence.
-extend-exclude = ["experiment/*/tests"]
+# AI-written tests stay exactly as the AI wrote them, since they are the evidence.
+extend-exclude = ["experiment/*/tests", "demo/test_*_spec.py"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP", "SIM", "S", "RUF"]
 
 [tool.ruff.lint.per-file-ignores]
-# Bite runs pytest, git and the AI command by design, from arguments the user gives it.
-"bite.py" = ["S603", "S607"]
+# Bite runs pytest and the AI command by design, from arguments the user gives it.
+"bite.py" = ["S603"]
 "experiment/*.py" = ["S603"]
 "tests/**" = ["S101"]
 
