@@ -59,7 +59,7 @@ Measured on the demo, on a laptop:
 |---|---|
 | AI writes the spec tests, then the gate runs | 16 s |
 | Gate: Agree, then 13 breaks | 2.9 s |
-| Full CI run (install, lint, types, Bite's tests, gate) | under 1 min |
+| Full CI run on GitHub (install, lint, types, Bite's tests, gate) | 19 s |
 
 The time grows with the number of breaks times the test suite's run time.
 [`directive.md`](directive.md) covers how to keep it inside an hour on a large codebase.
