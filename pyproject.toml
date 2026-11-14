@@ -32,6 +32,7 @@ select = ["E", "F", "I", "B", "UP", "SIM", "S", "RUF"]
 # Bite runs pytest and the AI command by design, from arguments the user gives it.
 "bite.py" = ["S603"]
 "experiment/*.py" = ["S603"]
+"demo.py" = ["S603"]
 "tests/**" = ["S101"]
 
 [tool.mypy]

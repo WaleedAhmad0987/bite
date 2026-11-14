@@ -33,6 +33,7 @@ DISAGREES demo/test_refunds_spec.py::test_exactly_30_days_allowed: a code bug or
 
 ```sh
 uv sync --group dev
+uv run python demo.py                                             # the demo: 3 steps, press Enter for each
 uv run pytest -q                                                  # Bite's own tests
 uv run python bite.py demo/refunds.py --tests demo/test_refunds_spec.py
 
